@@ -26,4 +26,4 @@ for dd in soup.select('dl.movie-list dd', limit=10):
                                           divs[2].split('\n')[1].strip(), divs[3].split('\n')[1].strip())
     result.append([mvname, mvtype, starring, playdate])
 data = pd.DataFrame(result)
-data.to_csv('./maoyan1.csv', index=False, header=False,encoding="utf_8_sig")
+data.to_csv('./maoyan1.csv', index=False, header=False, encoding="utf_8_sig")
