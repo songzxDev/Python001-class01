@@ -2,6 +2,7 @@ import scrapy
 import pandas as pd
 from bs4 import BeautifulSoup
 from scrapy.selector import Selector
+from myscrapy.items import MyscrapyItem
 
 
 class MoviesSpider(scrapy.Spider):
@@ -11,9 +12,11 @@ class MoviesSpider(scrapy.Spider):
 
     def start_requests(self):
         url = f'https://maoyan.com/films?showType=3'
-        yield scrapy.Request(url=url, callback=self.parse)
+        item = MyscrapyItem()
+        yield scrapy.Request(url=url, meta={'item': item}, callback=self.parse)
 
     def parse(self, response):
+        item = response.meta['item']
         result = [['电影名称', '电影类型', '电影主演', '上映时间']]
         mvs = Selector(response=response).xpath('//*[@id="app"]/div/div[2]/div[2]/dl')
         mvname, mvtype, starring, playdate = [], [], [], []
@@ -28,5 +31,5 @@ class MoviesSpider(scrapy.Spider):
         playdate = [d.strip() for d in playdate if d.strip()]
         for i in range(10):
             result.append([mvname[i], mvtype[i], starring[i], playdate[i]])
-        data = pd.DataFrame(result)
-        data.to_csv('./maoyan2.csv', index=False, header=False, encoding="utf_8_sig")
+        item['result'] = result
+        yield item

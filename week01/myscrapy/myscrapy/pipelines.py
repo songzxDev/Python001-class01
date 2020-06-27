@@ -5,9 +5,11 @@
 
 
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
+import pandas as pd
 
 
 class MyscrapyPipeline:
     def process_item(self, item, spider):
+        data = pd.DataFrame(item['result'])
+        data.to_csv('./maoyan2.csv', index=False, header=False, encoding="utf_8_sig")
         return item
